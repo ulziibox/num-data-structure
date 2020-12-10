@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include "list.h"
 int main()
@@ -8,13 +7,15 @@ int main()
 	init(&st, 10);
 	int t, x, pos;
 
-	while (1) {
+	while (1)
+	{
 		printf(" 1: insert, 2: remove,  3: empty, 5: search, 6: print,"
-		       "7: exit\n");
+			   "7: exit\n");
 		scanf("%d", &t);
 		error = 0;
 
-		switch (t) {
+		switch (t)
+		{
 		case 1:
 			printf("Oruulax utga: ");
 			scanf("%d", &x);

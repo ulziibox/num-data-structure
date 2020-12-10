@@ -52,6 +52,7 @@ void insert(struct List *p, int x, int pos)
 	}
 	else
 	{
+		// pos -с хойшх бүх элементийг shift-лээд тухайн байрлалд x утгыг оруулж өгөв.
 		for (int c = p->size; c > pos; c--)
 			p->dat[c] = p->dat[c - 1];
 
@@ -74,7 +75,7 @@ int removeElement(struct List *p, int pos)
 		int temp = p->dat[pos];
 
 		for (int c = pos; c < (p->len - 1); c++)
-			p->dat[c] = p->dat[c + 1];
+			p->dat[c] = p->dat[c + 1]; //shift үйлдэл
 
 		p->size--;
 		return temp;
