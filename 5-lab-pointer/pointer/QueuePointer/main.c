@@ -6,15 +6,17 @@ int main()
 	/* Queue үүсгэн, эхлүүлэх */
 	struct Queue st;
 	init(&st);
-	int t, x;
+	int t, x, pos;
 
-	while (1) {
+	while (1)
+	{
 		printf("1: enqueue, 2: dequeue, 3: print, 4: empty, 5: front,"
-		       "6: back, 7: size, 8: search, 9: exit\n");
+			   "6: back, 7: size, 8: search, 9: exit\n");
 		scanf("%d", &t);
 		error = 0;
 
-		switch (t) {
+		switch (t)
+		{
 		case 1:
 			scanf("%d", &x);
 			enQueue(&st, x);
