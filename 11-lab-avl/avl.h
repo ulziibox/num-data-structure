@@ -11,6 +11,7 @@ struct Node
 	int data;
 	struct Node *left_child;
 	struct Node *right_child;
+	int height;
 };
 
 /* өгөгдсөн data утга бүхий шинэ Node үүсгэж буцаана */
@@ -20,6 +21,7 @@ struct Node *create_node(int data)
 	n->data = data;
 	n->left_child = NULL;
 	n->right_child = NULL;
+	n->height = 1;
 	return n;
 }
 /* өгөгдсөн дэд модыг устгах */
@@ -55,12 +57,51 @@ int height(struct Node *root)
 	//Хэрвээ root нь NULL тэй тэнцвэл хоосон эсвэл дууссан гэсэн үг
 	if (root == NULL)
 		return 0;
-	//Бүх зүүн болон баруун хүүг recursive функцээр дуудаж өндрийг нэгээр нэмэгдүүлнэ
-	//Ингэхдээ аль их утгатайг нь буцааж байгаа
-	return (1 + max(height(root->left_child), height(root->right_child)));
+	return root->height;
+
+	// return (1 + max(height(root->left_child), height(root->right_child)));
 }
+
+int checkProperty(struct Node *root)
+{
+	if (root == NULL)
+		return 0;
+	return height(root->left_child) - height(root->right_child);
+}
+
+struct Node *rightRotate(struct Node *right)
+{
+	struct Node *left = right->left_child;
+	struct Node *left_right = left->right_child;
+
+	left->right_child = right;
+	right->left_child = left_right;
+
+	//Өндрөө шинэчлэнэ
+	right->height = 1 + max(height(right->left_child), height(right->right_child));
+	left->height = 1 + max(height(left->left_child), height(left->right_child));
+
+	return left;
+}
+
+struct Node *leftRotate(struct Node *left)
+{
+	struct Node *right = left->right_child;
+	struct Node *right_left = right->left_child;
+
+	right->left_child = left;
+	left->right_child = right_left;
+
+	//Өндрөө нэмж өгнө
+	left->height = 1 + max(height(left->left_child), height(left->right_child));
+	right->height = 1 + max(height(right->left_child), height(right->right_child));
+
+	return left;
+}
+
 /* root-ийн зааж буй зангилаагаар үндэсээ хийсэн дэд модонд d утгыг орууж шинээр үүссэн дэд модыг буцаана */
-struct Node *insert(struct Node *root, int d)
+struct Node *
+insert(struct Node *root, int d)
 {
 	//Хоосон гэж үзээд гараас орж ирсэн дататай шинэ Node үүсгэнэ
 	if (root == NULL)
@@ -72,7 +113,36 @@ struct Node *insert(struct Node *root, int d)
 	else if (d > root->data)
 		root->right_child = insert(root->right_child, d);
 	//Уг функц маань node төрлийн утгыг буцаах хэрэгтэй учир заавал бичих шаардлагатай
-	return root;
+	else
+		return root;
+
+	root->height = 1 + max(height(root->left_child), height(root->right_child));
+
+	int property = checkProperty(root);
+
+	//4 чанарыг шалгаж үзээд тэнцвэрт модыг хэрэгжүүлнэ
+
+	//LL case
+	if (property > 1 && d < root->left_child->data)
+		return rightRotate(root);
+
+	//LR case
+	if (property > 1 && d > root->left_child->data)
+	{
+		root->left_child = leftRotate(root->left_child);
+		return rightRotate(root);
+	}
+
+	//RR case
+	if (property < -1 && d > root->right_child->data)
+		return leftRotate(root);
+
+	//RL case
+	if (property < -1 && d < root->right_child->data)
+	{
+		root->right_child = rightRotate(root->right_child);
+		return leftRotate(root);
+	}
 }
 /* root-ийн зааж буй зангилаагаар үндэсээ хийсэн дэд модоос d утгыг устгаж шинээр үүссэн дэд модыг буцаана */
 struct Node *remove1(struct Node *root, int d)
